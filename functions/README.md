@@ -1,2 +1,4 @@
 # geek_camp_hackathon_vol1_server
 技育CAMP Hackathon vol1のサーバサイドのコード
+
+IBM Cloud Functionsを利用した
