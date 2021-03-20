@@ -1,0 +1,2 @@
+# geek_camp_hackathon_vol1_open
+技育CAMPのハッカソンvol1で作ったshell.ioの公開用リポジトリ
