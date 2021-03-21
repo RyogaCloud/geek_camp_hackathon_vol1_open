@@ -1,6 +1,11 @@
 import Vue from "vue";
 import App from "./App.vue";
 import firebase from "firebase";
+import VTooltip from "v-tooltip";
+
+Vue.use(VTooltip, {
+  defaultHtml: false,
+});
 
 const config = {
   apiKey: "AIzaSyAzox-yCigtLo3KLEg9OjSbSb1iMweKMFU",

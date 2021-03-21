@@ -1,176 +1,208 @@
 <template>
-  <div id="app">
-    <div
-      class="modal_container"
-      :class="{ 'is-open': tabSelect.isTxt }"
-      @click.self="inputTxt_change()"
-    >
-      <div class="modal_main_container modal_main_text">
-        <div class="form_container">
-          <h3>自由引数の入力</h3>
-          <p>ディレクトリなどの引数を任意文字列にてご入力ください</p>
-          <p>例) ~/usr/exapmle/desktop など</p>
-          <input class="form_input" type="text" v-model="FreeText" />
-        </div>
-        <div class="enroll_btn" @click="inputTxt_Add()">追加</div>
+  <div style="width: 100vw; height: 100vh">
+    <div id="mobile_modal">
+      <img
+        src="./assets/logo.png"
+        alt=""
+        style="width: 300px; user-select: none"
+      />
+      <div id="mobile_description">
+        <p>スマートフォンでのご利用は対応しておりません</p>
+        <p>PCにてご利用ください</p>
       </div>
     </div>
-    <div
-      class="modal_container"
-      :class="{ 'is-open': tabSelect.isUsrEnroll }"
-      @click.self="user_enroll_cmd()"
-    >
-      <div class="modal_main_container modal_main_usrenroll">
-        <div class="form_container">
-          <h3>カスタムコマンドの入力</h3>
-          <p>標準コマンド以外をご利用になる場合はご入力ください</p>
-          <p>例) docker-compose など</p>
-          <input class="form_input" type="text" v-model="userEnrollcommand" />
-        </div>
-        <div class="enroll_btn" @click="custumCommandAdd()">追加</div>
-      </div>
-    </div>
-    <div id="header_container">
-      <div id="search_container">
-        <div id="search_border">
-          <input type="text" id="search_box" placeholder="Search command..." v-model="searchWord"/>
-          <div id="search_button_container" @click="searchcommands">
-            <img id="search_button" src="./assets/search_button.png" alt="">
+    <div id="app">
+      <div
+        class="modal_container"
+        :class="{ 'is-open': tabSelect.isTxt }"
+        @click.self="inputTxt_change()"
+      >
+        <div class="modal_main_container modal_main_text">
+          <div class="form_container">
+            <h3>自由引数の入力</h3>
+            <p>ディレクトリなどの引数を任意文字列にてご入力ください</p>
+            <p>例) ~/usr/exapmle/desktop など</p>
+            <input class="form_input" type="text" v-model="FreeText" />
           </div>
+          <div class="enroll_btn" @click="inputTxt_Add()">追加</div>
         </div>
       </div>
-      <div id="title_container">
-        <img
-          src="./assets/logo.png"
-          alt=""
-          style="width: 170px; user-select: none"
-        />
-      </div>
-      <div v-if="isLogin" class="auth_container">
-          <img style="width:50px; margin-right: 15px; border-radius: 15px;" v-bind:src="authUserIcon" alt="">
-          <div class="auth_button" style="background: #F45363" @click="signOut">ログアウト</div>
-      </div>
-      <div v-else class="auth_container">  
-        <div class="auth_button" @click="signIn">ログイン</div>
-      </div>
-    </div>
-    <div id="main_container">
-      <div id="tab_container">
-        <div
-          class="tab tab_cmd"
-          @click="tabClicked('cmd')"
-          :class="{ 'is-selected': tabSelect.isCmd }"
-        >
-          >_
-        </div>
-        <div
-          v-if="optTabDisp"
-          class="tab tab_option"
-          @click="tabClicked('opt')"
-          :class="{ 'is-selected': tabSelect.isOpt }"
-        >
-          -a
-        </div>
-        <div
-          v-if="isLogin"
-          class="tab tab_usr"
-          @click="tabClicked('usr')"
-          :class="{ 'is-selected': tabSelect.isUsr }"
-        >
-          @
-        </div>
-        <div v-if="isLogin" class="tab tab_usr_enroll" @click="user_enroll_cmd()">->@</div>
-        <div class="tab tab_txt" @click="inputTxt_change()">txt_</div>
-      </div>
-      <div id="cmds_container">
-        <div id="cmds_border">
-          <div class="tab_element" v-if="tabSelect.isCmd">
-            <div
-              v-for="(command, tab_cmd_index) in commands"
-              v-bind:key="tab_cmd_index"
-              :class="'type_' + command.type"
-              class="cmd_tile_container cmd_insert"
-              @click="commandsAdd(command)"
-            >
-              {{ command.label }}
-            </div>
+      <div
+        class="modal_container"
+        :class="{ 'is-open': tabSelect.isUsrEnroll }"
+        @click.self="user_enroll_cmd()"
+      >
+        <div class="modal_main_container modal_main_usrenroll">
+          <div class="form_container">
+            <h3>カスタムコマンドの入力</h3>
+            <p>標準コマンド以外をご利用になる場合はご入力ください</p>
+            <p>例) docker-compose など</p>
+            <input class="form_input" type="text" v-model="userEnrollcommand" />
           </div>
-          <div class="tab_element" v-else-if="tabSelect.isOpt">
-            <div
-              v-for="(option, tab_opt_index) in optionsList"
-              v-bind:key="tab_opt_index"
-              :class="'type_' + option.type"
-              class="cmd_tile_container cmd_insert"
-              @click="commandsAdd(option)"
-            >
-              {{ option.label }}
-            </div>
-          </div>
-          <div class="tab_element" v-if="tabSelect.isUsr">
-            <div
-              v-for="(user, tab_usr_index) in users"
-              v-bind:key="tab_usr_index"
-              :class="'type_' + user.type"
-              class="cmd_tile_container cmd_insert"
-              @click="commandsAdd(user)"
-            >
-              {{ user.label }}
+          <div class="enroll_btn" @click="custumCommandAdd()">追加</div>
+        </div>
+      </div>
+      <div id="header_container">
+        <div id="search_container">
+          <div id="search_border">
+            <input
+              type="text"
+              id="search_box"
+              placeholder="Search command..."
+              v-model="searchWord"
+            />
+            <div id="search_button_container" @click="searchcommands">
+              <img id="search_button" src="./assets/search_button.png" alt="" />
             </div>
           </div>
         </div>
+        <div id="title_container">
+          <img
+            src="./assets/logo.png"
+            alt=""
+            style="width: 170px; user-select: none"
+          />
+        </div>
+        <div v-if="isLogin" class="auth_container">
+          <img
+            style="width: 50px; margin-right: 15px; border-radius: 15px"
+            v-bind:src="authUserIcon"
+            alt=""
+          />
+          <div class="auth_button" style="background: #f45363" @click="signOut">
+            SIGNOUT
+          </div>
+        </div>
+        <div v-else class="auth_container">
+          <div class="auth_button" @click="signIn">SIGNIN</div>
+        </div>
       </div>
-      <div id="edit_container">
-        <div id="edit_border">
+      <div id="main_container">
+        <div id="tab_container">
           <div
-            class="edit_vertical"
-            v-for="(editData, index) in editDatas"
-            v-bind:key="index"
+            class="tab tab_cmd"
+            @click="tabClicked('cmd')"
+            :class="{ 'is-selected': tabSelect.isCmd }"
           >
-            <div :class="'type_' + editData.type" class="cmd_tile_container">
-              {{ editData.label }}
-              <div class="remove" @click="commandsRemove([index])">×</div>
-            </div>
-            <div
-              v-for="(edit_option, edit_opt_index) in editData.options"
-              v-bind:key="edit_opt_index"
-              :class="'type_' + edit_option.type"
-              class="cmd_tile_container"
-            >
-              {{ edit_option.label }}
+            >_
+          </div>
+          <div
+            v-if="optTabDisp"
+            class="tab tab_option"
+            @click="tabClicked('opt')"
+            :class="{ 'is-selected': tabSelect.isOpt }"
+          >
+            -a
+          </div>
+          <div
+            v-if="isLogin"
+            class="tab tab_usr"
+            @click="tabClicked('usr')"
+            :class="{ 'is-selected': tabSelect.isUsr }"
+          >
+            @
+          </div>
+          <div
+            v-if="isLogin"
+            class="tab tab_usr_enroll"
+            @click="user_enroll_cmd()"
+          >
+            ->@
+          </div>
+          <div class="tab tab_txt" @click="inputTxt_change()">txt_</div>
+        </div>
+        <div id="cmds_container">
+          <div id="cmds_border">
+            <div class="tab_element" v-if="tabSelect.isCmd">
               <div
-                class="remove"
-                @click="commandsRemove([index, edit_opt_index])"
+                v-for="(command, tab_cmd_index) in commands"
+                v-bind:key="tab_cmd_index"
+                :class="'type_' + command.type"
+                class="cmd_tile_container cmd_insert"
+                @click="commandsAdd(command)"
+                v-tooltip.bottom-end="command.description"
               >
-                ×
+                {{ command.label }}
+              </div>
+            </div>
+            <div class="tab_element" v-else-if="tabSelect.isOpt">
+              <div
+                v-for="(option, tab_opt_index) in optionsList"
+                v-bind:key="tab_opt_index"
+                :class="'type_' + option.type"
+                class="cmd_tile_container cmd_insert"
+                @click="commandsAdd(option)"
+                v-tooltip.bottom-end="option.description"
+              >
+                {{ option.label }}
+              </div>
+            </div>
+            <div class="tab_element" v-if="tabSelect.isUsr">
+              <div
+                v-for="(user, tab_usr_index) in users"
+                v-bind:key="tab_usr_index"
+                :class="'type_' + user.type"
+                class="cmd_tile_container cmd_insert"
+                @click="commandsAdd(user)"
+              >
+                {{ user.label }}
               </div>
             </div>
           </div>
         </div>
-        <div id="result_container">
-          <div id="preview_container">
-            #!/bin/bash
+        <div id="edit_container">
+          <div id="edit_border">
             <div
-              class="preview_vertical"
+              class="edit_vertical"
               v-for="(editData, index) in editDatas"
               v-bind:key="index"
             >
-              {{ editData.label }}
+              <div :class="'type_' + editData.type" class="cmd_tile_container">
+                {{ editData.label }}
+                <div class="remove" @click="commandsRemove([index])">×</div>
+              </div>
               <div
-                style="margin-left: 15px"
                 v-for="(edit_option, edit_opt_index) in editData.options"
                 v-bind:key="edit_opt_index"
+                :class="'type_' + edit_option.type"
+                class="cmd_tile_container"
               >
                 {{ edit_option.label }}
+                <div
+                  class="remove"
+                  @click="commandsRemove([index, edit_opt_index])"
+                >
+                  ×
+                </div>
               </div>
             </div>
           </div>
-          <div id="genelate_btn_container">
-            <div id="genelate_btn" @click="handleDownload()">DOWNLOAD</div>
+          <div id="result_container">
+            <div id="preview_container">
+              #!/bin/bash
+              <div
+                class="preview_vertical"
+                v-for="(editData, index) in editDatas"
+                v-bind:key="index"
+              >
+                {{ editData.label }}
+                <div
+                  style="margin-left: 15px"
+                  v-for="(edit_option, edit_opt_index) in editData.options"
+                  v-bind:key="edit_opt_index"
+                >
+                  {{ edit_option.label }}
+                </div>
+              </div>
+            </div>
+            <div id="genelate_btn_container">
+              <div id="genelate_btn" @click="handleDownload()">DOWNLOAD</div>
+            </div>
           </div>
         </div>
       </div>
+      <div ref="drag"></div>
     </div>
-    <div ref="drag"></div>
   </div>
 </template>
 
@@ -181,13 +213,13 @@ export default {
   name: "App",
   data() {
     return {
-      isLogin:false,
-      authUserIcon:"",
-      authUid:"",
-      searchWord:"",
+      isLogin: false,
+      authUserIcon: "",
+      authUid: "",
+      searchWord: "",
       FreeText: "",
-      userEnrollcommand:"",
-      optTabDisp:false,
+      userEnrollcommand: "",
+      optTabDisp: false,
       tabSelect: {
         isCmd: true,
         isOpt: false,
@@ -220,10 +252,12 @@ export default {
     };
   },
   methods: {
-    custumCommandAdd(){
-      firebase.database().ref(this.authUid + "/" + this.userEnrollcommand)
+    custumCommandAdd() {
+      firebase
+        .database()
+        .ref(this.authUid + "/" + this.userEnrollcommand)
         .set({
-          label:this.userEnrollcommand
+          label: this.userEnrollcommand,
         });
       this.userEnrollcommand = "";
       this.tabSelect.isUsrEnroll = !this.tabSelect.isUsrEnroll;
@@ -233,47 +267,55 @@ export default {
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then(user => {
+        .then((user) => {
           if (user) {
             // !!userはBoolen変更後反転
             this.isLogin = !!user;
             this.authUserIcon = user.photoURL;
-            this.authUid = user.uid
+            this.authUid = user.uid;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
     signOut() {
       firebase.auth().signOut();
       this.isLogin = false;
-      this.authUid = ""
+      this.authUid = "";
     },
-    searchcommands(){
+    searchcommands() {
       let target = this.searchWord;
-      if(target == ""){
-        return
+      if (target == "") {
+        return;
       }
       this.tabSelect.isOpt = false;
       this.tabSelect.isUsr = false;
       this.tabSelect.isCmd = true;
-      fetch('fetchURL', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa('APITOKEN')
-        },
-        body: JSON.stringify({"text": target})
-      })
-        .then(response =>  {
-            return response.json();
-        }).then( res => {
+      fetch(
+        "Fetch URL",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Basic " +
+              btoa(
+                "ACCESS TOKEN"
+              ),
+          },
+          body: JSON.stringify({ text: target }),
+        }
+      )
+        .then((response) => {
+          return response.json();
+        })
+        .then((res) => {
           let commands = res.response.result.commands;
-          this.commands = commands
-        }).catch(function (error) {
-            console.log(error);
-            
+          this.commands = commands;
+        })
+        .catch(function (error) {
+          console.log(error);
         });
     },
     inputTxt_change() {
@@ -324,8 +366,8 @@ export default {
         } else {
           console.log("コマンド未入力でオプション入力をされました");
         }
-      } else if (target.type == "usr"){
-        if(!this.editDatas.length){
+      } else if (target.type == "usr") {
+        if (!this.editDatas.length) {
           this.optTabDisp = true;
         }
         this.editDatas.push(JSON.parse(JSON.stringify(target)));
@@ -334,7 +376,7 @@ export default {
         this.tabSelect.isCmd = false;
         this.tabSelect.isOpt = false;
       } else {
-        if(!this.editDatas.length){
+        if (!this.editDatas.length) {
           this.optTabDisp = true;
         }
         this.editDatas.push(JSON.parse(JSON.stringify(target)));
@@ -347,7 +389,7 @@ export default {
     commandsRemove(target) {
       if (target.length == 1) {
         this.editDatas.splice(target[0], 1);
-        if(!this.editDatas.length){
+        if (!this.editDatas.length) {
           this.optTabDisp = false;
           this.tabSelect.isOpt = false;
           this.tabSelect.isUsr = false;
@@ -378,29 +420,31 @@ export default {
       link.click();
     },
   },
-  mounted: function() {
-    firebase.auth().onAuthStateChanged(user => {
+  mounted: function () {
+    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         // !!userはBoolen変更後反転
         this.isLogin = !!user;
         this.authUserIcon = user.photoURL;
-        this.authUid = user.uid
-        firebase.database().ref(this.authUid).on("value", (customCmd) =>{
-          this.users = [];
-          let prepare;
-          let customCmdList = customCmd.val();
-          for (let cmd of Object.keys(customCmdList)) {
-            prepare = {
-              label: cmd,
-              type: "usr",
-              options: [],
-            };
-            this.users.push(prepare);
-          }
-        });
+        this.authUid = user.uid;
+        firebase
+          .database()
+          .ref(this.authUid)
+          .on("value", (customCmd) => {
+            this.users = [];
+            let prepare;
+            let customCmdList = customCmd.val();
+            for (let cmd of Object.keys(customCmdList)) {
+              prepare = {
+                label: cmd,
+                type: "usr",
+                options: [],
+              };
+              this.users.push(prepare);
+            }
+          });
       }
     });
-    
   },
   created() {
     firebase
@@ -440,6 +484,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap");
 input[type="text"]:focus {
   outline: 0;
 }
@@ -447,6 +492,10 @@ img {
   pointer-events: none;
 }
 #app {
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+  font-family: "M PLUS Rounded 1c", sans-serif;
   width: 100vw;
   height: 100vh;
   background-color: #e4ecfc;
@@ -489,17 +538,17 @@ img {
           background: #e4ecfc;
           box-shadow: inset 2px 2px 5px #abb1bd, inset -2px -2px 5px #ffffff;
         }
-        #search_button_container{
+        #search_button_container {
           cursor: pointer;
-          width: 12%;
+          width: 11%;
           padding: 3px;
           border-radius: 10px;
-          border: solid 1px #777777;
+          // border: solid 1px #777777;
           box-shadow: 5px 5px 10px #abb1bd, -5px -5px 10px #ffffff;
-          &:hover{
+          &:hover {
             box-shadow: inset 2px 2px 5px #abb1bd, inset -2px -2px 5px #ffffff;
           }
-          #search_button{
+          #search_button {
             width: 100%;
             height: 100%;
           }
@@ -734,6 +783,134 @@ img {
         }
       }
     }
+  }
+}
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+
+  .tooltip-inner {
+    background: #222222cc;
+    color: white;
+    border-radius: 16px;
+    padding: 5px 10px 4px;
+  }
+
+  .tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+    border-color: #222222cc;
+    z-index: 1;
+  }
+
+  &[x-placement^="top"] {
+    margin-bottom: 5px;
+
+    .tooltip-arrow {
+      border-width: 5px 5px 0 5px;
+      border-left-color: transparent !important;
+      border-right-color: transparent !important;
+      border-bottom-color: transparent !important;
+      bottom: -5px;
+      left: calc(50% - 5px);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  &[x-placement^="bottom"] {
+    margin-top: 5px;
+
+    .tooltip-arrow {
+      border-width: 0 5px 5px 5px;
+      border-left-color: transparent !important;
+      border-right-color: transparent !important;
+      border-top-color: transparent !important;
+      top: -5px;
+      left: calc(50% - 5px);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  &[x-placement^="right"] {
+    margin-left: 5px;
+
+    .tooltip-arrow {
+      border-width: 5px 5px 5px 0;
+      border-left-color: transparent !important;
+      border-top-color: transparent !important;
+      border-bottom-color: transparent !important;
+      left: -5px;
+      top: calc(50% - 5px);
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  &[x-placement^="left"] {
+    margin-right: 5px;
+
+    .tooltip-arrow {
+      border-width: 5px 0 5px 5px;
+      border-top-color: transparent !important;
+      border-right-color: transparent !important;
+      border-bottom-color: transparent !important;
+      right: -5px;
+      top: calc(50% - 5px);
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  &.popover {
+    $color: #f9f9f9;
+
+    .popover-inner {
+      background: $color;
+      color: black;
+      padding: 24px;
+      border-radius: 5px;
+      box-shadow: 0 5px 30px rgba(black, 0.1);
+    }
+
+    .popover-arrow {
+      border-color: $color;
+    }
+  }
+
+  &[aria-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s, visibility 0.15s;
+  }
+
+  &[aria-hidden="false"] {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.15s;
+  }
+}
+#mobile_modal {
+  width: 100vw;
+  height: 100vh;
+  background: #e4ecfc;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  @media screen and (max-width: 768px) {
+    display: flex;
+  }
+  #mobile_description {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 }
 .modal_container {
